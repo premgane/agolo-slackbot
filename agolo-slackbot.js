@@ -5,9 +5,14 @@ var RestClient = require('node-rest-client').Client;
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
-var SlackSecret = require('./slack-secrets.js');
-var TOKEN = SlackSecret.slackToken();
-var AGOLO_URL = SlackSecret.agoloURL();
+// For local
+// var SlackSecret = require('./slack-secrets.js');
+// var TOKEN = SlackSecret.slackToken();
+// var AGOLO_URL = SlackSecret.agoloURL();
+
+// For Heroku
+var TOKEN = process.env.SLACK_TOKEN;
+var AGOLO_URL = process.env.AGOLO_URL;
 
 var LOG_LEVEL = 'debug';
 
