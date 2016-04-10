@@ -74,6 +74,12 @@ slackClient.on("message", function(message) {
     		for (var i = 0; i < matches.length; i++) {
     			var candidate = matches[i];
     			if (validUrl.isWebUri(candidate)) {
+    				// Show typing indicator as we summarize
+    				slackClient._send({id: 1,
+  						type: "typing",
+  						channel: channel
+					});
+
     				summarize(candidate, function(result) {
     					slackClient.sendMessage(result, channel);
     				});
