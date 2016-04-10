@@ -96,7 +96,3 @@ slackClient.on("message", function(message) {
 });
 
 slackClient.start();
-
-// To prevent "Heroku's Web process failed to bind to $PORT within 60 seconds of launch" error
-var http = require('http');
-http.createServer(function (req, res) { res.writeHead(200, {'Content-Type': 'text/plain'}); res.send('it is running\n'); }).listen(process.env.PORT || 5000);

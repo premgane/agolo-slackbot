@@ -1,1 +1,1 @@
-web: node agolo-slackbot.js
+node agolo-slackbot.js
