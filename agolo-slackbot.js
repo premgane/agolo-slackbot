@@ -1,27 +1,36 @@
-var SlackClient = require('slack-client');
+var RtmClient = require('@slack/client').RtmClient;
+var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
+var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
+
 var SlackSecret = require('./slack-secrets.js');
 
-var slackClient = new SlackClient("PASTE YOUR BOT API TOKEN HERE");
+var TOKEN = SlackSecret.token();
+var LOG_LEVEL = 'debug';
+
+var slackClient = new RtmClient(TOKEN, {logLevel: LOG_LEVEL});
 
 var bot; // Track bot user .. for detecting messages by yourself
 
-slackClient.on('loggedIn', function(user, team) {
-    bot = user;
-    console.log("Logged in as " + user.name
-        + " of " + team.name + ", but not yet connected");
+slackClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
+	bot = rtmStartData.self.id;
 });
 
 slackClient.on('open', function() {
     console.log('Connected');
 });
 
-slackClient.on('message', function(message) {
-    if (message.user == bot.id) return; // Ignore bot's own messages
+slackClient.on("message", function(message) {
 
-    var channel = slackClient.getChannelGroupOrDMByID(message.channel);
-    channel.send('Hello world!');
+    if (message.user == bot) return; // Ignore bot's own messages
+
+    var text = message.text;
+    var channel = message.channel;
+
+    slackClient.sendMessage('this is a test message', channel, function callback(){});
+
+    
 
     // More goes here later..
 });
 
-slackClient.login();
+slackClient.start();
