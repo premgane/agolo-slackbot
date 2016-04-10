@@ -96,3 +96,12 @@ slackClient.on("message", function(message) {
 });
 
 slackClient.start();
+
+
+// To prevent Heroku from crashing us. https://github.com/slackhq/node-slack-client/issues/39
+http = require 'http'
+handle = (req, res) -> res.end "hit"
+
+server = http.createServer handle
+
+server.listen process.env.PORT || 5000
