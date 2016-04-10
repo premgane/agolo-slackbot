@@ -5,6 +5,6 @@ Using this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the
 
 But I had to do this:
 
-```javascript
+```bash
 npm install @slack/client --save
 ```
