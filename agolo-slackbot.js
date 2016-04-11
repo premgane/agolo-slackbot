@@ -127,6 +127,8 @@ if (HEROKU) {
 	server.listen(process.env.PORT || 5000);
 
 	if (process.env.HEROKU_APP_URL) {
+		console.log("Heroku app URL: " + process.env.HEROKU_APP_URL);
+		
 		var heartbeat = function() {
 			restClient.get(process.env.HEROKU_APP_URL, function(){
 				console.log("heartbeat!");
