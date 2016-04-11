@@ -57,19 +57,23 @@ var summarize = function(url, typingInterval, callback) {
 
 		clearInterval(typingInterval);
 
-		if (data && data.summary && data.summary[0].sentences) {
-			var sentences = data.summary[0].sentences;
+		if (data && data.summary) {
+			for (var summIdx = 0; summIdx < data.summary.length; summIdx++) {
+				if (data.summary[summIdx].sentences) {
+					var sentences = data.summary[summIdx].sentences;
 
-			console.log("sentences: \n", sentences);
+					console.log("sentences for summary " + summIdx + ": \n", sentences);
 
-			// Quote each line
-			for (var i = 0; i < sentences.length; i++) {
-				sentences[i] = ">" + sentences[i];
+					// Quote each line
+					for (var i = 0; i < sentences.length; i++) {
+						sentences[i] = ">" + sentences[i];
+					}
+
+					result = result + sentences.join("\n-\n");
+
+					callback(result);
+				}
 			}
-
-			result = result + sentences.join("\n-\n");
-
-			callback(result);
 		}
 	});
 }
