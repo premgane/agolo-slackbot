@@ -10,7 +10,9 @@ But I had to do this:
 ```bash
 npm install @slack/client --save
 ```
-for all of the dependencies. But if you're just pulling this entire repository, you won't have to do this; I've used the `--save` flag and included all the dependencies in this repo.
+because the `slack-client` is deprecated. Consequently, a lot of details of this module and its methods have changed since that tutorial was written. So, I've made the appropriate changes.
+
+I also had to do `npm install` for all of the dependencies. But if you're just pulling this entire repository, you won't have to do this; I've used the `--save` flag and included all the dependencies in this repo.
 
 ## Heroku
 
