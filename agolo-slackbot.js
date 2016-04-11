@@ -34,7 +34,7 @@ var summarize = function(url, callback) {
 
 	var args = {
 		data: {
-			"coref":"true",
+			"coref":"false",
 			"summary_length":"3",
 			"articles":[
     			{
