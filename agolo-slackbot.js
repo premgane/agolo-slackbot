@@ -46,7 +46,11 @@ var summarize = function(url, callback) {
 		headers: { "Content-Type": "application/json" }
 	};
 
+	console.log("Sending Agolo request!");
+	console.log(args);
+
 	restClient.post(AGOLO_URL, args, function (data, rawResponse) {
+		console.log("Agolo response: ");
 		console.log(data);
 		var sentences = data.summary[0].sentences;
 
@@ -87,12 +91,19 @@ slackClient.on("message", function(message) {
     			var candidate = matches[i];
     			if (validUrl.isWebUri(candidate)) {
     				// Show typing indicator as we summarize
-    				slackClient._send({id: 1,
-  						type: "typing",
-  						channel: channel
-					});
+    				var sendTypingMessage = function() {
+    					slackClient._send({
+    						id: 1,
+  							type: "typing",
+  							channel: channel
+						});
+    				}
+    				var TYPING_MESSAGE_SECS = 3;
+    				var typingInterval = setInterval(function() { sendTypingMessage() }, TYPING_MESSAGE_SECS * 1000);
+    				
 
     				summarize(candidate, function(result) {
+    					clearInterval(typingInterval);
     					slackClient.sendMessage(result, channel);
     				});
     			}
