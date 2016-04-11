@@ -116,7 +116,7 @@ if (HEROKU) {
 
 	if (process.env.HEROKU_APP_URL) {
 		var heartbeat = function() {
-			restClient.get(HEROKU_APP_URL, function(){
+			restClient.get(process.env.HEROKU_APP_URL, function(){
 				console.log("heartbeat!");
 			});
 		};
