@@ -54,16 +54,21 @@ var summarize = function(url, callback) {
 	restClient.post(AGOLO_URL, args, function (data, rawResponse) {
 		console.log("Agolo response: ");
 		console.log(data);
-		var sentences = data.summary[0].sentences;
 
-		// Quote each line
-		for (var i = 0; i < sentences.length; i++) {
-			sentences[i] = ">" + sentences[i];
+		clearInterval(typingInterval);
+
+		if (data && data.summary && data.summary.sentences) {
+			var sentences = data.summary[0].sentences;
+
+			// Quote each line
+			for (var i = 0; i < sentences.length; i++) {
+				sentences[i] = ">" + sentences[i];
+			}
+
+			result = result + sentences.join("\n-\n");
+
+			callback(result);
 		}
-
-		result = result + sentences.join("\n-\n");
-
-		callback(result);
 	});
 }
 
@@ -105,8 +110,7 @@ slackClient.on("message", function(message) {
     				
 
     				summarize(candidate, function(result) {
-    					clearInterval(typingInterval);
-    					slackClient.sendMessage(result, channel);
+    					slackClient.sendMessage(result, channel, typingInterval);
     				});
     			}
     		}
