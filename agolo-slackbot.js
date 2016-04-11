@@ -14,7 +14,8 @@ if (process.env.SLACK_TOKEN && process.env.AGOLO_URL) {
 	TOKEN = process.env.SLACK_TOKEN;
 	AGOLO_URL = process.env.AGOLO_URL;
 	HEROKU = true;
-	console.log("Slack token: " + process.env.SLACK_TOKEN);
+	
+	console.log("Slack token: " + TOKEN);
 } else {
 	// For local
 	var SlackSecret = require('./slack-secrets.js');
@@ -127,10 +128,16 @@ if (HEROKU) {
 	server.listen(process.env.PORT || 5000);
 
 	if (process.env.HEROKU_APP_URL) {
-		console.log("Heroku app URL: " + process.env.HEROKU_APP_URL);
-		
+		var URL = process.env.HEROKU_APP_URL;
+
+		if (URL.indexOf("http") != 0) {
+			URL = "http://" + URL;
+		}
+
+		console.log("Heroku app URL: " + URL);
+
 		var heartbeat = function() {
-			restClient.get(process.env.HEROKU_APP_URL, function(){
+			restClient.get(URL, function(){
 				console.log("heartbeat!");
 			});
 		};
