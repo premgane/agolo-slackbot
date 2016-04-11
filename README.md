@@ -1,5 +1,10 @@
 # agolo-slackbot
-A Slack bot that summarizes using the Agolo.com API
+
+A [Slack](http://slack.com) bot that
+
+1. scans every message in any channel it's invited to
+2. looks for URLs
+3. summarizes the URLs using the [Agolo](http://agolo.com) Summarizer API.
 
 Using this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
 
