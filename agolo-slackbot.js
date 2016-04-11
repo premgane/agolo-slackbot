@@ -31,7 +31,7 @@ var restClient = new RestClient();
 var bot; // Track bot user .. for detecting messages by yourself
 
 // Summarize a given URL and call the given callback with the result
-var summarize = function(url, callback, typingInterval) {
+var summarize = function(url, typingInterval, callback) {
 	var result = "Here's Agolo's summary of " + url + "\n";
 
 	var args = {
@@ -111,8 +111,8 @@ slackClient.on("message", function(message) {
     				var typingInterval = setInterval(function() { sendTypingMessage() }, TYPING_MESSAGE_SECS * 1000);
     				
 
-    				summarize(candidate, function(result) {
-    					slackClient.sendMessage(result, channel, typingInterval);
+    				summarize(candidate, typingInterval, function(result) {
+    					slackClient.sendMessage(result, channel);
     				});
     			}
     		}
