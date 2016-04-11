@@ -58,3 +58,23 @@ module.exports = {
   }
 };
 ```
+## Running the bot
+
+### Heroku
+
+I used:
+
+```bash
+heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#v89 -a
+```
+and
+
+```bash
+git push heroku master
+```
+
+### Locally
+
+```bash
+node agolo-slackbot.js
+```

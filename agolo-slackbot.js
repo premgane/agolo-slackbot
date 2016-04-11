@@ -60,6 +60,8 @@ var summarize = function(url, callback, typingInterval) {
 		if (data && data.summary && data.summary.sentences) {
 			var sentences = data.summary[0].sentences;
 
+			console.log("sentences: \n", sentences);
+
 			// Quote each line
 			for (var i = 0; i < sentences.length; i++) {
 				sentences[i] = ">" + sentences[i];
