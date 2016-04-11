@@ -3,8 +3,8 @@
 A [Slack](http://slack.com) bot that
 
 1. scans every message in any channel it's invited to
-2. looks for URLs
-3. summarizes the content of the links using the [Agolo](http://agolo.com) Summarizer API.
+2. looks for URLs pointing to web pages
+3. summarizes the contents of the web page using the [Agolo](http://agolo.com) Summarizer API.
 
 Using this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
 
