@@ -23,9 +23,19 @@ I deployed this on Heroku and ran into a number of issues:
 
 ## Credentials
 
+[Use this page](https://my.slack.com/services/new/bot) to set up your bot and get the Slack token.
+
+[Go to Agolo](http://agolo.com) and sign up for an account to get the URL. You will actually get the URL and the auth token, though. I'm using a beta URL that will soon be deprecated.
+
 The bot expects one of the following:
 
 ### Heroku environment
+
+Your Heroku app should have the following [config vars](https://devcenter.heroku.com/articles/config-vars):
+
+1. AGOLO_URL
+2. HEROKU_APP_URL - the URL of your Heroku app. Or, whatever your custom domain is. This is used to send the heartbeat pings.
+3. SLACK_TOKEN
 
 ### Non-Heroku environment
 
@@ -41,7 +51,3 @@ module.exports = {
   }
 };
 ```
-
-[Use this page](https://my.slack.com/services/new/bot) to set up your bot and get the Slack token.
-
-[Go to Agolo](http://agolo.com) and sign up for an account to get the URL. You will actually get the URL and the auth token, though. I'm using a beta URL that will soon be deprecated.
