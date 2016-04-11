@@ -5,14 +5,21 @@ var RestClient = require('node-rest-client').Client;
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
-// For local
-// var SlackSecret = require('./slack-secrets.js');
-// var TOKEN = SlackSecret.slackToken();
-// var AGOLO_URL = SlackSecret.agoloURL();
+var TOKEN, AGOLO_URL;
+var HEROKU = false;
 
-// For Heroku
-var TOKEN = process.env.SLACK_TOKEN;
-var AGOLO_URL = process.env.AGOLO_URL;
+// Determine which environment we're running in
+if (process.env.SLACK_TOKEN && process.env.AGOLO_URL) {
+	// For Heroku
+	TOKEN = process.env.SLACK_TOKEN;
+	AGOLO_URL = process.env.AGOLO_URL;
+	HEROKU = true;
+} else {
+	// For local
+	var SlackSecret = require('./slack-secrets.js');
+	TOKEN = SlackSecret.slackToken();
+	AGOLO_URL = SlackSecret.agoloURL();
+}
 
 var LOG_LEVEL = 'debug';
 
@@ -98,10 +105,25 @@ slackClient.on("message", function(message) {
 slackClient.start();
 
 
-// To prevent Heroku from crashing us. https://github.com/slackhq/node-slack-client/issues/39
-http = require('http');
-handle = function(req, res) {return res.end("hit"); };
+if (HEROKU) {
+	// To prevent Heroku from crashing us. https://github.com/slackhq/node-slack-client/issues/39
+	http = require('http');
+	handle = function(req, res) {return res.end("hit"); };
 
-server = http.createServer(handle);
+	server = http.createServer(handle);
 
-server.listen(process.env.PORT || 5000);
+	server.listen(process.env.PORT || 5000);
+
+	if (process.env.HEROKU_APP_URL) {
+		var heartbeat = function() {
+			restClient.get(HEROKU_APP_URL, function(){
+				console.log("heartbeat!");
+			});
+		};
+
+		heartbeat();
+
+		var HEARTBEAT_INTERVAL_MINS = 5;
+		setInterval(heartbeat, HEARTBEAT_INTERVAL_MINS * 60 * 1000);
+	}
+}
