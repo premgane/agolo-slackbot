@@ -14,6 +14,7 @@ if (process.env.SLACK_TOKEN && process.env.AGOLO_URL) {
 	TOKEN = process.env.SLACK_TOKEN;
 	AGOLO_URL = process.env.AGOLO_URL;
 	HEROKU = true;
+	console.log("Slack token: " + process.env.SLACK_TOKEN);
 } else {
 	// For local
 	var SlackSecret = require('./slack-secrets.js');
