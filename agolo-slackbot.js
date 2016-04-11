@@ -31,7 +31,7 @@ var restClient = new RestClient();
 var bot; // Track bot user .. for detecting messages by yourself
 
 // Summarize a given URL and call the given callback with the result
-var summarize = function(url, callback) {
+var summarize = function(url, callback, typingInterval) {
 	var result = "Here's Agolo's summary of " + url + "\n";
 
 	var args = {
