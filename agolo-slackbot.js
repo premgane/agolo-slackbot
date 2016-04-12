@@ -14,6 +14,8 @@ if (process.env.SLACK_TOKEN && process.env.AGOLO_URL) {
 	TOKEN = process.env.SLACK_TOKEN;
 	AGOLO_URL = process.env.AGOLO_URL;
 	HEROKU = true;
+	
+	console.log("Slack token: " + TOKEN);
 } else {
 	// For local
 	var SlackSecret = require('./slack-secrets.js');
@@ -29,7 +31,7 @@ var restClient = new RestClient();
 var bot; // Track bot user .. for detecting messages by yourself
 
 // Summarize a given URL and call the given callback with the result
-var summarize = function(url, callback) {
+var summarize = function(url, typingInterval, callback) {
 	var result = "Here's Agolo's summary of " + url + "\n";
 
 	var args = {
@@ -52,16 +54,27 @@ var summarize = function(url, callback) {
 	restClient.post(AGOLO_URL, args, function (data, rawResponse) {
 		console.log("Agolo response: ");
 		console.log(data);
-		var sentences = data.summary[0].sentences;
 
-		// Quote each line
-		for (var i = 0; i < sentences.length; i++) {
-			sentences[i] = ">" + sentences[i];
+		clearInterval(typingInterval);
+
+		if (data && data.summary) {
+			for (var summIdx = 0; summIdx < data.summary.length; summIdx++) {
+				if (data.summary[summIdx].sentences) {
+					var sentences = data.summary[summIdx].sentences;
+
+					console.log("sentences for summary " + summIdx + ": \n", sentences);
+
+					// Quote each line
+					for (var i = 0; i < sentences.length; i++) {
+						sentences[i] = ">" + sentences[i];
+					}
+
+					result = result + sentences.join("\n-\n");
+
+					callback(result);
+				}
+			}
 		}
-
-		result = result + sentences.join("\n-\n");
-
-		callback(result);
 	});
 }
 
@@ -102,8 +115,7 @@ slackClient.on("message", function(message) {
     				var typingInterval = setInterval(function() { sendTypingMessage() }, TYPING_MESSAGE_SECS * 1000);
     				
 
-    				summarize(candidate, function(result) {
-    					clearInterval(typingInterval);
+    				summarize(candidate, typingInterval, function(result) {
     					slackClient.sendMessage(result, channel);
     				});
     			}
@@ -126,8 +138,16 @@ if (HEROKU) {
 	server.listen(process.env.PORT || 5000);
 
 	if (process.env.HEROKU_APP_URL) {
+		var URL = process.env.HEROKU_APP_URL;
+
+		if (URL.indexOf("http") != 0) {
+			URL = "http://" + URL;
+		}
+
+		console.log("Heroku app URL: " + URL);
+
 		var heartbeat = function() {
-			restClient.get(process.env.HEROKU_APP_URL, function(){
+			restClient.get(URL, function(){
 				console.log("heartbeat!");
 			});
 		};
