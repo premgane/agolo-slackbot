@@ -47,7 +47,7 @@ Your Heroku app should have the following [config vars](https://devcenter.heroku
 
 ### Non-Heroku environment
 
-A file called `slack-secrets.js` containing secret tokens and whatnot that should not be `git push`ed. Here is what that file should look like:
+Manually create file called `slack-secrets.js`. It contains secret tokens that should not be `git push`ed. Here is what that file should look like:
 
 ```javascript
 module.exports = {
