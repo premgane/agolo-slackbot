@@ -27,7 +27,7 @@ I deployed this on Heroku and ran into a number of issues:
 2. `package.json` - Heroku expects a `package.json` file containing the command to run the bot.
 3. Heroku expects a webserver to be running, so I added a very simple one that returns a static string every time a request is made.
 4. Heroku kills any process that's idle for more than a certain amount of time. So, I added a heartbeat so the bot makes a `GET` request to the webserver every few minutes.
-5. Heroku only allows a dyno to be non-idle for 18 hours within every 24 hour period. So, there will be 6 hours of the day where the bot is offline. I don't have a solution for this.
+5. On the Hobby (free) tier, Heroku only allows a dyno to be non-idle for 18 hours within every 24 hour period. So, there will be 6 hours of the day where the bot is offline. I don't have a solution for this.
 
 ## Credentials
 
