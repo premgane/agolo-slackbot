@@ -121,7 +121,13 @@ slackClient.on("message", function(message) {
     			}
     		}
     	}
+
+    	var botMentionRegex = /<@([^\s]+)>/;
     	
+    	matches = text.match(botMentionRegex);
+    	if (matches && matches[1] === bot) {
+    		slackClient.sendMessage(':blush:', channel);
+    	}
     }
 });
 
