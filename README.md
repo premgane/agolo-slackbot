@@ -32,7 +32,7 @@ I deployed this on Heroku and ran into a number of issues:
 
 [Use this page](https://my.slack.com/services/new/bot) to set up your bot and get the Slack token.
 
-[Go to Agolo](http://agolo.com) and sign up for an account to get the URL. You will actually get the URL and the auth token, though. I'm using a beta URL that will soon be deprecated.
+[Go to Agolo](http://agolo.com) and sign up for an account to get the URL. You will actually get the real beta URL and the auth token, though. I'm using an alpha URL that will soon be deprecated. That's why it's part of the config vars.
 
 The bot expects one of the following:
 
