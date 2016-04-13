@@ -8,27 +8,6 @@ A [Slack](http://slack.com) bot that
 
 Using this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
 
-## The official Slack client npm module
-
-But I had to do this:
-
-```bash
-npm install @slack/client --save
-```
-because the `slack-client` is deprecated. Consequently, a lot of details of this module and its methods have changed since that tutorial was written. So, I've made the appropriate changes.
-
-I also had to do `npm install` for all of the dependencies. But if you're just pulling this entire repository, you won't have to do this; I've used the `--save` flag and included all the dependencies in this repo.
-
-## Heroku
-
-I deployed this on Heroku and ran into a number of issues:
-
-1. `Procfile` - Heroku expects a Procfile, so I added one. Using a `web` dyno didn't work, so I created one called `bot`.
-2. `package.json` - Heroku expects a `package.json` file containing the command to run the bot.
-3. Heroku expects a webserver to be running, so I added a very simple one that returns a static string every time a request is made.
-4. Heroku kills any process that's idle for more than a certain amount of time. So, I added a heartbeat so the bot makes a `GET` request to the webserver every few minutes.
-5. On the Hobby (free) tier, Heroku only allows a dyno to be non-idle for 18 hours within every 24 hour period. So, there will be 6 hours of the day where the bot is offline. I don't have a solution for this.
-
 ## Credentials
 
 [Use this page](https://my.slack.com/services/new/bot) to set up your bot and get the Slack token.
@@ -79,3 +58,26 @@ git push heroku master
 ```bash
 node agolo-slackbot.js
 ```
+
+## Issues with deploying to Heroku
+
+I deployed this on Heroku and ran into a number of issues:
+
+1. `Procfile` - Heroku expects a Procfile, so I added one. Using a `web` dyno didn't work, so I created one called `bot`.
+2. `package.json` - Heroku expects a `package.json` file containing the command to run the bot.
+3. Heroku expects a webserver to be running, so I added a very simple one that returns a static string every time a request is made.
+4. Heroku kills any process that's idle for more than a certain amount of time. So, I added a heartbeat so the bot makes a `GET` request to the webserver every few minutes.
+5. On the Hobby (free) tier, Heroku only allows a dyno to be non-idle for 18 hours within every 24 hour period. So, there will be 6 hours of the day where the bot is offline. I don't have a solution for this.
+
+## The official Slack client npm module
+
+As mentioned, I used a tutorial.
+
+But, it was outdated because the official Slack client `npm` module has been renamed. So, I had to do this:
+
+```bash
+npm install @slack/client --save
+```
+because the `slack-client` is deprecated. Consequently, a lot of details of this module and its methods have changed since that tutorial was written. So, I've made the appropriate changes.
+
+I also had to do `npm install` for all of the dependencies. But if you're just pulling this entire repository, you won't have to do this; I've used the `--save` flag and included all the dependencies in this repo.
