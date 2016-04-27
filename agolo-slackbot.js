@@ -86,11 +86,24 @@ slackClient.on('open', function() {
     console.log('Connected');
 });
 
+// Make the decision whether to summarize based on a number of factors
+var shouldSummarize = function(message, candidate) {
+	// Ignore bot's own messages
+	if (!message.user || message.user == bot) {
+		return false;
+	}
+
+	// Possibly just another bot talking to us?
+	if (message.is_ephemeral) {
+		return false;
+	}
+
+	// Final check: is this a real URL?
+	return validUrl.isWebUri(candidate);
+}
+
 slackClient.on("message", function(message) {
-
-    if (message.user == bot) return; // Ignore bot's own messages
-
-    var text = message.text;
+	var text = message.text;
     var channel = message.channel;
     var attachments = message.attachments;
 
@@ -102,7 +115,7 @@ slackClient.on("message", function(message) {
     		// Start at index 1 because 0 has the entire match, not just the group
     		for (var i = 0; i < matches.length; i++) {
     			var candidate = matches[i];
-    			if (validUrl.isWebUri(candidate)) {
+    			if (shouldSummarize(message, candidate)) {
     				// Show typing indicator as we summarize
     				var sendTypingMessage = function() {
     					slackClient._send({
