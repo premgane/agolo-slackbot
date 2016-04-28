@@ -6,7 +6,18 @@ A [Slack](http://slack.com) bot that
 2. looks for URLs pointing to web pages
 3. summarizes the contents of the web page using the [Agolo](http://agolo.com) Summarizer API.
 
-Using this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
+A lot of the code in this repo is adapted from this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
+
+However, I had to make a significant amount of changes to get it to work. Please see this project's wiki for more details.
+
+# Setting up the bot
+
+Here's an overview of the steps to get this bot up and running:
+
+1. Get Slack bot integration credentials.
+2. Get [Agolo](http://agolo.com) developer credentials.
+3. Enter the credentials into either Heroku or the bot's config file, depending on where you want to deploy the bot.
+4. Deploy and run the bot.
 
 ## Credentials
 
