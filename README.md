@@ -57,9 +57,13 @@ module.exports = {
 
 ## Run the bot
 
+On the command line:
+
 ```bash
 node agolo-slackbot.js
 ```
+
+Because it's a long-running process (i.e, a Node server), you should probably use a process monitor like [ForeverJS](https://github.com/foreverjs/forever) or [Supervisor](http://supervisord.org/). Or you could simply run it in [screen](http://www.thegeekstuff.com/2010/07/screen-command-examples/) or as a [background process](http://stackoverflow.com/a/11856575).
 
 ## Use the bot
 
