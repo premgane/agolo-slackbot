@@ -37,9 +37,13 @@ Here's an overview of the steps to get this bot up and running:
 
 ## Configure the bot
 
-Manually create a file called `secrets.js`. It contains secret tokens that should not be `git push`ed. It has been added to the project's `.gitignore` to prevent accidental `git push`es.
+Do a `git pull` to get this project.
 
-Here is what that file should look like:
+Manually create a file called `secrets.js` in the project's directory.
+
+`secrets.js` should contain secret tokens that should not be `git push`ed. It has been added to the project's `.gitignore` to prevent accidental `git push`es.
+
+Here is what `secret.js` should look like:
 
 ```javascript
 module.exports = {
