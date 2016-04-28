@@ -13,7 +13,7 @@ A [Slack](http://slack.com) bot that
 ## Features
 
 * Automatically detects URLs posted to Slack. No one needs to use a Slack command or address the bot directly.
-* Responds to URLs in Direct Messages. Provides a private summary, not posted to any channel.
+* Even responds to URLs in Direct Messages to the bot. If DM'd, the bot provides a private summary, not posted to any channel.
 * Allows you to blacklist a list of sites. Comes with a suggested blacklist.
 * Only works in channels where the bot is present. If you feel that the bot is annoying in a specific channel, just kick it out of that channel.
 
