@@ -3,7 +3,10 @@ var BLACKLIST = [
 	'agolo.com',
 	'youtube',
 	'twitter.com',
-	'mail.google'
+	'mail.google',
+	'imgur.com',
+	'bit.ly',
+	'tinyurl'
 ];
 
 
