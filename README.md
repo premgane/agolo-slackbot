@@ -22,13 +22,13 @@ Here's an overview of the steps to get this bot up and running:
 1. Enter the credentials into either Heroku or this bot's config file (depending on where you want to deploy & run the bot).
 1. Deploy & run the bot.
 
-## Credentials
+## Get credentials
 
 [Use this page](https://my.slack.com/services/new/bot) to set up your bot and get the Slack token.
 
 [Go to Agolo](http://agolo.com) and sign up for an account to get the URL and an auth token.
 
-The bot expects one of the following:
+## Configure the bot
 
 ### Heroku environment
 
@@ -58,7 +58,7 @@ module.exports = {
   }
 };
 ```
-## Running the bot
+## Run the bot
 
 ### Heroku
 
@@ -73,7 +73,7 @@ and:
 git push heroku master
 ```
 
-### Locally
+### Command line
 
 ```bash
 node agolo-slackbot.js
