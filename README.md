@@ -17,9 +17,10 @@ You can either run the bot locally (i.e., on any machine with Node.js installed)
 Here's an overview of the steps to get this bot up and running:
 
 1. Get Slack bot integration credentials.
-2. Get [Agolo](http://agolo.com) developer credentials.
-3. Enter the credentials into either Heroku (or the bot's config file, depending on where you want to deploy the bot).
-4. Deploy and run the bot.
+1. Get [Agolo](http://agolo.com) developer credentials.
+1. `git pull` this repository.
+1. Enter the credentials into either Heroku or this bot's config file (depending on where you want to deploy & run the bot).
+1. Deploy & run the bot.
 
 ## Credentials
 
