@@ -8,7 +8,7 @@ A [Slack](http://slack.com) bot that
 
 ## Screenshot
 
-<img src="https://raw.githubusercontent.com/premgane/agolo-slackbot/master/screenshot.png" width="500">
+<img src="https://raw.githubusercontent.com/premgane/agolo-slackbot/master/resources/screenshot.png" width="500">
 
 ## Features
 
@@ -31,7 +31,7 @@ Here's an overview of the steps to get this bot up and running:
 
 ## Get credentials
 
-[On this page,](https://my.slack.com/services/new/bot) set up your bot and get the Slack token. [Use this image](https://raw.githubusercontent.com/premgane/agolo-slackbot/master/agolo_slack_avatar.png) as the profile picture.
+[On this page,](https://my.slack.com/services/new/bot) set up your bot and get the Slack token. [Use this image](https://raw.githubusercontent.com/premgane/agolo-slackbot/master/resources/agolo_slack_avatar.png) as the profile picture.
 
 [Go to dev.agolo.com](http://dev.agolo.com) and sign up for an account to get the URL and an auth token.
 
