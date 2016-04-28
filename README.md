@@ -6,6 +6,8 @@ A [Slack](http://slack.com) bot that
 2. looks for URLs pointing to web pages
 3. summarizes the contents of the web page using the [Agolo](http://agolo.com) Summarizer API.
 
+<img src="https://raw.githubusercontent.com/premgane/agolo-slackbot/master/screenshot.png" width="500">
+
 # Setting up the bot
 
 You can either run the bot locally (i.e., on any machine with Node.js installed) or on Heroku. If you plan to run it on Heroku, please look at [this page on the project wiki](https://github.com/premgane/agolo-slackbot/wiki/Heroku).
