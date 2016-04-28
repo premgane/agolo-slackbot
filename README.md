@@ -2,7 +2,7 @@
 
 A [Slack](http://slack.com) bot that
 
-1. scans every message in any channel it's invited to
+1. scans every message in every channel it's invited to
 2. looks for URLs pointing to web pages
 3. summarizes the contents of the web page using the [Agolo](http://agolo.com) Summarizer API.
 
