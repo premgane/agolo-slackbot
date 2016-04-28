@@ -8,27 +8,32 @@ var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 var BLACKLISTED_SITES = require('./blacklisted-sites.js');
 
-var TOKEN, AGOLO_URL;
+var SLACK_TOKEN, AGOLO_TOKEN, AGOLO_URL;
 var HEROKU = false;
 
 // Determine which environment we're running in
-if (process.env.SLACK_TOKEN && process.env.AGOLO_URL) {
+if (process.env.SLACK_TOKEN && process.env.AGOLO_TOKEN) {
 	// For Heroku
-	TOKEN = process.env.SLACK_TOKEN;
+	SLACK_TOKEN = process.env.SLACK_TOKEN;
+	AGOLO_TOKEN = process.env.AGOLO_TOKEN;
 	AGOLO_URL = process.env.AGOLO_URL;
+
 	HEROKU = true;
 	
-	console.log("Slack token: " + TOKEN);
+	console.log("Slack token: " + SLACK_TOKEN);
 } else {
 	// For local
 	var SlackSecret = require('./slack-secrets.js');
-	TOKEN = SlackSecret.slackToken();
+
+	SLACK_TOKEN = SlackSecret.slackToken();
+
 	AGOLO_URL = SlackSecret.agoloURL();
+	AGOLO_TOKEN = SlackSecret.agoloToken();
 }
 
 var LOG_LEVEL = 'debug';
 
-var slackClient = new RtmClient(TOKEN, {logLevel: LOG_LEVEL});
+var slackClient = new RtmClient(SLACK_TOKEN, {logLevel: LOG_LEVEL});
 var restClient = new RestClient();
 
 var bot; // Track bot user .. for detecting messages by yourself
@@ -48,7 +53,10 @@ var summarize = function(url, typingInterval, callback) {
 					"metadata":{}
 				}
 			]},
-		headers: { "Content-Type": "application/json" }
+		headers: { 
+			"Content-Type": "application/json",
+			"Ocp-Apim-Subscription-Key": AGOLO_TOKEN
+			}
 	};
 
 	console.log("Sending Agolo request!");
