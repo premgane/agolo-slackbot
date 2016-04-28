@@ -22,7 +22,7 @@ Here's an overview of the steps to get this bot up and running:
 
 [On this page,](https://my.slack.com/services/new/bot) set up your bot and get the Slack token. [Use this image](agolo_slack_avatar.png) as the profile picture.
 
-[Go to Agolo](http://agolo.com) and sign up for an account to get the URL and an auth token.
+[Go to dev.agolo.com](http://dev.agolo.com) and sign up for an account to get the URL and an auth token.
 
 ## Configure the bot
 
