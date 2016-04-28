@@ -68,9 +68,3 @@ Because it's a long-running process (i.e, a Node server), you should run it in [
 ## Use the bot
 
 You need to [invite the bot into a Slack channel](https://get.slack.help/hc/en-us/articles/201980108-Inviting-team-members-to-a-channel) for it to start listening to that channel. Then, whenever someone posts a link that isn't in the bot's blacklist, the bot will post a summary to the channel.
-
-# Footnote
-
-A lot of the code in this repo is adapted from this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
-
-However, I had to make a significant amount of changes to get it to work. Please see [this project's wiki](https://github.com/premgane/agolo-slackbot/wiki/The-official-Slack-client-npm-module) for more details.
