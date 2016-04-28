@@ -20,7 +20,7 @@ if (process.env.SLACK_TOKEN && process.env.AGOLO_TOKEN) {
 
 	HEROKU = true;
 	
-	console.log("Slack token: " + SLACK_TOKEN);
+	console.log('Slack token: ' + SLACK_TOKEN);
 } else {
 	// For local
 	var SlackSecret = require('./slack-secrets.js');
@@ -40,30 +40,30 @@ var bot; // Track bot user .. for detecting messages by yourself
 
 // Summarize a given URL and call the given callback with the result
 var summarize = function(url, typingInterval, callback) {
-	var result = "Here's Agolo's summary of " + url + "\n";
+	var result = "Here's Agolo's summary of " + url + '\n';
 
 	var args = {
 		data: {
-			"coref":"false",
-			"summary_length":"3",
-			"articles":[
+			'coref':'false',
+			'summary_length':'3',
+			'articles':[
     			{
-					"type":"article",
-					"url": url,
-					"metadata":{}
+					'type':'article',
+					'url': url,
+					'metadata':{}
 				}
 			]},
 		headers: { 
-			"Content-Type": "application/json",
-			"Ocp-Apim-Subscription-Key": AGOLO_TOKEN
+			'Content-Type': 'application/json',
+			'Ocp-Apim-Subscription-Key': AGOLO_TOKEN
 			}
 	};
 
-	console.log("Sending Agolo request!");
+	console.log('Sending Agolo request!');
 	console.log(args);
 
 	restClient.post(AGOLO_URL, args, function (data, rawResponse) {
-		console.log("Agolo response: ");
+		console.log('Agolo response: ');
 		console.log(data);
 
 		clearInterval(typingInterval);
@@ -73,14 +73,14 @@ var summarize = function(url, typingInterval, callback) {
 				if (data.summary[summIdx].sentences) {
 					var sentences = data.summary[summIdx].sentences;
 
-					console.log("sentences for summary " + summIdx + ": \n", sentences);
+					console.log('sentences for summary ' + summIdx + ': \n', sentences);
 
 					// Quote each line
 					for (var i = 0; i < sentences.length; i++) {
-						sentences[i] = ">" + sentences[i];
+						sentences[i] = '>' + sentences[i];
 					}
 
-					result = result + sentences.join("\n-\n");
+					result = result + sentences.join('\n-\n');
 
 					callback(result);
 				}
@@ -127,7 +127,7 @@ var shouldSummarize = function(message, candidate) {
 	return true;
 }
 
-slackClient.on("message", function(message) {
+slackClient.on('message', function(message) {
 	var text = message.text;
     var channel = message.channel;
     var attachments = message.attachments;
@@ -145,7 +145,7 @@ slackClient.on("message", function(message) {
     				var sendTypingMessage = function() {
     					slackClient._send({
     						id: 1,
-  							type: "typing",
+  							type: 'typing',
   							channel: channel
 						});
     				}
@@ -175,7 +175,7 @@ slackClient.start();
 if (HEROKU) {
 	// To prevent Heroku from crashing us. https://github.com/slackhq/node-slack-client/issues/39
 	http = require('http');
-	handle = function(req, res) {return res.end("hit"); };
+	handle = function(req, res) {return res.end('hit'); };
 
 	server = http.createServer(handle);
 
@@ -184,15 +184,15 @@ if (HEROKU) {
 	if (process.env.HEROKU_APP_URL) {
 		var URL = process.env.HEROKU_APP_URL;
 
-		if (URL.indexOf("http") != 0) {
-			URL = "http://" + URL;
+		if (URL.indexOf('http') != 0) {
+			URL = 'http://' + URL;
 		}
 
-		console.log("Heroku app URL: " + URL);
+		console.log('Heroku app URL: ' + URL);
 
 		var heartbeat = function() {
 			restClient.get(URL, function(){
-				console.log("heartbeat!");
+				console.log('heartbeat!');
 			});
 		};
 
