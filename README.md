@@ -37,7 +37,7 @@ Here's an overview of the steps to get this bot up and running:
 
 ## Configure the bot
 
-[Do a `git clone`](https://help.github.com/articles/cloning-a-repository/) to get this repository.
+On the machine you want to use as your server, [run `git clone`](https://help.github.com/articles/cloning-a-repository/) to get this repository.
 
 Manually create a file called `secrets.js` in the repo's directory.
 
