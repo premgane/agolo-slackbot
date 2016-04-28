@@ -1,4 +1,4 @@
-# agolo-slackbot
+# Agolo Slack Bot
 
 A [Slack](http://slack.com) bot that
 
