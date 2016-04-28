@@ -8,6 +8,10 @@ var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 var BLACKLISTED_SITES = require('./blacklisted-sites.js');
 
+// The minimum amount of time to wait between Agolo API requests
+// Ensures we don't spam the channel with summaries. Or DoS attack the Agolo API.
+var MAX_REQUEST_RATE_MS = 5000;
+
 var SLACK_TOKEN, AGOLO_TOKEN, AGOLO_URL;
 var HEROKU = false;
 
@@ -36,7 +40,11 @@ var LOG_LEVEL = 'debug';
 var slackClient = new RtmClient(SLACK_TOKEN, {logLevel: LOG_LEVEL});
 var restClient = new RestClient();
 
-var bot; // Track bot user .. for detecting messages by yourself
+// This bot's user ID
+var bot;
+
+// The timestamp, in milliseconds, of when the latest API request was sent
+var lastRequestTimestamp = 0;
 
 // Summarize a given URL and call the given callback with the result
 var summarize = function(url, typingInterval, callback) {
@@ -59,12 +67,11 @@ var summarize = function(url, typingInterval, callback) {
 			}
 	};
 
-	console.log('Sending Agolo request!');
-	console.log(args);
+	console.log('Sending Agolo request!', args);
 
+	lastRequestTimestamp = new Date().getTime();
 	restClient.post(AGOLO_URL, args, function (data, rawResponse) {
-		console.log('Agolo response: ');
-		console.log(data);
+		console.log('Agolo response: ', data);
 
 		clearInterval(typingInterval);
 
@@ -72,8 +79,6 @@ var summarize = function(url, typingInterval, callback) {
 			for (var summIdx = 0; summIdx < data.summary.length; summIdx++) {
 				if (data.summary[summIdx].sentences) {
 					var sentences = data.summary[summIdx].sentences;
-
-					console.log('sentences for summary ' + summIdx + ': \n', sentences);
 
 					// Quote each line
 					for (var i = 0; i < sentences.length; i++) {
@@ -121,6 +126,12 @@ var shouldSummarize = function(message, candidate) {
 		|| BLACKLISTED_SITES[url.domain + '.' + url.tld]
 		|| BLACKLISTED_SITES[url.domain]) {
 		console.log('Blacklisted site: ', url);
+		return false;
+	}
+
+	// We're summarizing too often
+	if (new Date().getTime() - lastRequestTimestamp < MAX_REQUEST_RATE_MS) {
+		console.log('We are making too many API requests.');
 		return false;
 	}
 
