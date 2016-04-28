@@ -52,7 +52,7 @@ node agolo-slackbot.js
 
 ## Use the bot
 
-You need to `/invite` the bot into a Slack channel for it to start listening to that channel. Then, whenever someone posts a link that isn't in the bot's blacklist, the bot will post a summary to the channel.
+You need to [invite the bot into a Slack channel](https://get.slack.help/hc/en-us/articles/201980108-Inviting-team-members-to-a-channel) for it to start listening to that channel. Then, whenever someone posts a link that isn't in the bot's blacklist, the bot will post a summary to the channel.
 
 # Footnote
 
