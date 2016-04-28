@@ -6,10 +6,6 @@ A [Slack](http://slack.com) bot that
 2. looks for URLs pointing to web pages
 3. summarizes the contents of the web page using the [Agolo](http://agolo.com) Summarizer API.
 
-A lot of the code in this repo is adapted from this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
-
-However, I had to make a significant amount of changes to get it to work. Please see [this project's wiki](https://github.com/premgane/agolo-slackbot/wiki/The-official-Slack-client-npm-module) for more details.
-
 # Setting up the bot
 
 You can either run the bot locally (i.e., on any machine with Node.js installed) or on Heroku. If you plan to run it on Heroku, please look at [this page on the project wiki](https://github.com/premgane/agolo-slackbot/wiki/Issues-with-deploying-to-Heroku) for some important caveats.
@@ -24,7 +20,7 @@ Here's an overview of the steps to get this bot up and running:
 
 ## Get credentials
 
-[Use this page](https://my.slack.com/services/new/bot) to set up your bot and get the Slack token.
+[On this page,](https://my.slack.com/services/new/bot) set up your bot and get the Slack token. [Use this image](agolo_slack_avatar.png) as the profile picture.
 
 [Go to Agolo](http://agolo.com) and sign up for an account to get the URL and an auth token.
 
@@ -78,3 +74,13 @@ git push heroku master
 ```bash
 node agolo-slackbot.js
 ```
+
+## Use the bot
+
+You need to `/invite` the bot into a Slack channel for it to start listening to that channel. Then, whenever someone posts a link that isn't in the bot's blacklist, the bot will post a summary to the channel.
+
+# Footnote
+
+A lot of the code in this repo is adapted from this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the-slack-api/
+
+However, I had to make a significant amount of changes to get it to work. Please see [this project's wiki](https://github.com/premgane/agolo-slackbot/wiki/The-official-Slack-client-npm-module) for more details.
