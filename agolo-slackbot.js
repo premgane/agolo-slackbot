@@ -23,7 +23,7 @@ if (process.env.SLACK_TOKEN && process.env.AGOLO_TOKEN) {
 	console.log('Slack token: ' + SLACK_TOKEN);
 } else {
 	// For local
-	var SlackSecret = require('./slack-secrets.js');
+	var SlackSecret = require('./secrets.js');
 
 	SLACK_TOKEN = SlackSecret.slackToken();
 

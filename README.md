@@ -26,7 +26,7 @@ Here's an overview of the steps to get this bot up and running:
 
 ## Configure the bot
 
-Manually create a file called `slack-secrets.js`. It contains secret tokens that should not be `git push`ed. It has been added to the project's `.gitignore` to prevent accidental `git push`es.
+Manually create a file called `secrets.js`. It contains secret tokens that should not be `git push`ed. It has been added to the project's `.gitignore` to prevent accidental `git push`es.
 
 Here is what that file should look like:
 
