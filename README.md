@@ -12,7 +12,7 @@ Using this tutorial: http://nordicapis.com/building-an-intelligent-bot-using-the
 
 [Use this page](https://my.slack.com/services/new/bot) to set up your bot and get the Slack token.
 
-[Go to Agolo](http://agolo.com) and sign up for an account to get the URL. You will actually get the real beta URL and the auth token, though. I'm using an alpha URL that will soon be deprecated. That's why it's part of the config vars.
+[Go to Agolo](http://agolo.com) and sign up for an account to get the URL and an auth token.
 
 The bot expects one of the following:
 
@@ -21,20 +21,24 @@ The bot expects one of the following:
 Your Heroku app should have the following [config vars](https://devcenter.heroku.com/articles/config-vars):
 
 1. `AGOLO_URL`
-2. `HEROKU_APP_URL` - the URL of your Heroku app. Or, whatever your custom domain is. This is used to send the heartbeat pings.
+2. `HEROKU_APP_URL` - the URL of your Heroku app. Or, the app's custom domain. This is used to send periodic heartbeat pings.
 3. `SLACK_TOKEN`
+4. `AGOLO_TOKEN`
 
 ### Non-Heroku environment
 
-Manually create file called `slack-secrets.js`. It contains secret tokens that should not be `git push`ed. Here is what that file should look like:
+Manually create a file called `slack-secrets.js`. It contains secret tokens that should not be `git push`ed. Here is what that file should look like:
 
 ```javascript
 module.exports = {
   slackToken: function () {
-    return "SLACK_TOKEN_FOR_THIS_BOT";
+    return 'SLACK_TOKEN_FOR_THIS_BOT';
   },
   agoloURL: function() {
-  	return "AGOLO_API_URL";
+  	return 'AGOLO_API_URL';
+  },
+  agoloToken: function() {
+  	return 'AGOLO_TOKEN';
   }
 };
 ```
@@ -42,12 +46,12 @@ module.exports = {
 
 ### Heroku
 
-I used:
+Use the command:
 
 ```bash
 heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#v89 -a
 ```
-and
+and:
 
 ```bash
 git push heroku master
