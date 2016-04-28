@@ -6,7 +6,16 @@ A [Slack](http://slack.com) bot that
 2. looks for URLs pointing to web pages
 3. summarizes the contents of the web page using the [Agolo](http://agolo.com) Summarizer API.
 
+## Screenshot
+
 <img src="https://raw.githubusercontent.com/premgane/agolo-slackbot/master/screenshot.png" width="500">
+
+## Features
+
+* Automatically detects URLs posted to Slack. No one needs to use a Slack command or address the bot directly.
+* Responds to URLs in Direct Messages. Provides a private summary, not posted to any channel.
+* Allows you to blacklist a list of sites. Comes with a suggested blacklist.
+* Only works in channels where the bot is present. If you feel that the bot is annoying in a specific channel, just kick it out of that channel.
 
 # Setting up the bot
 
