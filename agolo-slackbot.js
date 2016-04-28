@@ -6,7 +6,7 @@ var RestClient = require('node-rest-client').Client;
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
-var BLACKLISTED_SITES = require('./blacklisted-sites.js').sites;
+var BLACKLISTED_SITES = require('./blacklisted-sites.js');
 
 var TOKEN, AGOLO_URL;
 var HEROKU = false;

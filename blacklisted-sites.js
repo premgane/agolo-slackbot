@@ -19,8 +19,4 @@ var reducer = function(aggregate, element) {
 	return aggregate;
 }
 
-var result = BLACKLIST.reduce(reducer, empty);
-
-module.exports = {
-  sites: result
-};
+module.exports = BLACKLIST.reduce(reducer, empty);
