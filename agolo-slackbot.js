@@ -174,13 +174,11 @@ var RESPONSES = [
   ':blush:',
   ':grin:',
   ':innocent:',
-  ':relaxed:',
-  ':hugging_face:'
+  ':relaxed:'
 ];
 
 // If we've been mentioned, respond
 var respondToMentions = function(text, slackClient, channel) {
-    
     var matches = text.match(BOT_MENTION_REGEX);
     if (matches) {
       // Randomly pick a response
