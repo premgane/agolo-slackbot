@@ -84,7 +84,7 @@ var summarize = function(url, typingInterval, callback) {
             sentences[i] = '>' + sentences[i];
           }
 
-          var result = "Here's Agolo's summary of \"" + data.title + '"\n';
+          var result = "Here's Agolo's summary of \u201c_" + data.title + '_\u201d\n';
 
           result = result + sentences.join('\n-\n');
 
