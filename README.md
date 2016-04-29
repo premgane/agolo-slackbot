@@ -6,9 +6,15 @@ A [Slack](http://slack.com) bot that
 2. looks for URLs pointing to web pages
 3. summarizes the contents of the web page using the [Agolo](http://agolo.com) Summarizer API.
 
-## Screenshot
+## Screenshots
 
-<img src="https://raw.githubusercontent.com/premgane/agolo-slackbot/master/resources/screenshot.png" width="500">
+### Single document:
+
+<img src="https://raw.githubusercontent.com/premgane/agolo-slackbot/master/resources/screenshot-singledoc.png" width="500">
+
+### Multiple documents:
+
+<img src="https://raw.githubusercontent.com/premgane/agolo-slackbot/master/resources/screenshot-multidoc.png" width="500">
 
 ## Features
 
