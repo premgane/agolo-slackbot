@@ -114,7 +114,9 @@ var summarize = function(urls, typingInterval, callback) {
         }
       }
 
-      callback(title + result);
+      if (result && result.length) {
+        callback(title + result);
+      }
     }
   });
 };
@@ -141,7 +143,8 @@ var shouldSummarize = function(message, candidate) {
 
   // Check our blacklist
   var url = parseDomain(candidate);
-  if(BLACKLISTED_SITES[url.subdomain + '.' + url.domain + '.' + url.tld]
+  if(BLACKLISTED_SITES[candidate]
+    || BLACKLISTED_SITES[url.subdomain + '.' + url.domain + '.' + url.tld]
     || BLACKLISTED_SITES[url.subdomain + '.' + url.domain]
     || BLACKLISTED_SITES[url.domain + '.' + url.tld]
     || BLACKLISTED_SITES[url.domain]) {
