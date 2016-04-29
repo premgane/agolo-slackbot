@@ -1,9 +1,13 @@
 {
-  "name"            : "agolo-slackbot",
-  "version"         : "0.1.0",
-  "description"     : "A Slack bot that calls Agolo to summarize any link you post.",
-  "main"            : "agolo-slackbot.js",
-  "scripts"         : {
-                        "start" : "node agolo-slackbot.js"
-                      }
+  "name": "agolo-slackbot",
+  "version": "0.1.0",
+  "description": "A Slack bot that calls Agolo to summarize any link you post.",
+  "main": "agolo-slackbot.js",
+  "scripts": {
+    "start": "node agolo-slackbot.js"
+  },
+  "private": true,
+  "dependencies": {
+    "parse-domain": "^0.2.1"
+  }
 }
