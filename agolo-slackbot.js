@@ -82,7 +82,7 @@ var summarize = function(urls, typingInterval, callback) {
       // Summary title
       var title;
       if (data.title) {
-        title = '\n\u201c_*' + data.title + '*_\u201d\n';
+        title = '\n*' + forceUnicodeEncoding(data.title) + '*\n';
       } else {
         title = "Here's Agolo's summary of " + urls.join(', ') + '\n';
       }
@@ -96,7 +96,7 @@ var summarize = function(urls, typingInterval, callback) {
 
           // Quote each line
           for (var i = 0; i < sentences.length; i++) {
-            sentences[i] = '>' + sentences[i];
+            sentences[i] = '>' + forceUnicodeEncoding(sentences[i]);
           }
 
           // If the result already has the summary of a previous URL, append a separator
@@ -171,6 +171,12 @@ var getMatches = function(string, regex, index) {
   }
   return matches;
 };
+
+// Deal with Unicode weirdness
+// Taken from http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html
+var forceUnicodeEncoding = function(string) {
+  return decodeURIComponent(escape(string));
+}
 
 // This bot's user ID
 var BOT;
