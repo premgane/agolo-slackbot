@@ -6,7 +6,8 @@ var BLACKLIST = [
   'mail.google',
   'imgur.com',
   'bit.ly',
-  'tinyurl'
+  'tinyurl',
+  'vine'
 ];
 
 
