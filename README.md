@@ -13,6 +13,7 @@ A [Slack](http://slack.com) bot that
 ## Features
 
 * Automatically detects URLs posted to Slack. No one needs to use a Slack command or address the bot directly.
+* Summarizes multiple URLs together if they are mentioned in the same message. Makes full use of Agolo's powerful multi-doc summarization algorithm.
 * Even responds to URLs in Direct Messages to the bot. If DM'd, the bot provides a private summary, not posted to any channel.
 * Allows you to blacklist a list of sites. Comes with [a suggested blacklist.](https://github.com/premgane/agolo-slackbot/blob/master/blacklisted-sites.js)
 * Only works in channels where the bot is present. If you feel that the bot is annoying in a specific channel, just kick it out of that channel.
