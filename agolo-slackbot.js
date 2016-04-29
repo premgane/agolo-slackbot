@@ -80,7 +80,12 @@ var summarize = function(urls, typingInterval, callback) {
 
     if (data && data.summary) {
       // Summary title
-      var title = '\n\u201c_*' + data.title + '*_\u201d\n';
+      var title;
+      if (data.title) {
+        title = '\n\u201c_*' + data.title + '*_\u201d\n';
+      } else {
+        title = "Here's Agolo's summary of " + urls.join(', ') + '\n';
+      }
 
       var result = '';
 
