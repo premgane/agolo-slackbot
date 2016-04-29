@@ -17,22 +17,22 @@ var HEROKU = false;
 
 // Determine which environment we're running in
 if (process.env.SLACK_TOKEN && process.env.AGOLO_TOKEN) {
-	// For Heroku
-	SLACK_TOKEN = process.env.SLACK_TOKEN;
-	AGOLO_TOKEN = process.env.AGOLO_TOKEN;
-	AGOLO_URL = process.env.AGOLO_URL;
+  // For Heroku
+  SLACK_TOKEN = process.env.SLACK_TOKEN;
+  AGOLO_TOKEN = process.env.AGOLO_TOKEN;
+  AGOLO_URL = process.env.AGOLO_URL;
 
-	HEROKU = true;
-	
-	console.log('Slack token: ' + SLACK_TOKEN);
+  HEROKU = true;
+  
+  console.log('Slack token: ' + SLACK_TOKEN);
 } else {
-	// For local
-	var SlackSecret = require('./secrets.js');
+  // For local
+  var SlackSecret = require('./secrets.js');
 
-	SLACK_TOKEN = SlackSecret.slackToken();
+  SLACK_TOKEN = SlackSecret.slackToken();
 
-	AGOLO_URL = SlackSecret.agoloURL();
-	AGOLO_TOKEN = SlackSecret.agoloToken();
+  AGOLO_URL = SlackSecret.agoloURL();
+  AGOLO_TOKEN = SlackSecret.agoloToken();
 }
 
 var LOG_LEVEL = 'debug';
@@ -48,168 +48,168 @@ var lastRequestTimestamp = 0;
 
 // Summarize a given URL and call the given callback with the result
 var summarize = function(url, typingInterval, callback) {
-	var result = "Here's Agolo's summary of " + url + '\n';
+  var args = {
+    data: {
+      'coref':'false',
+      'summary_length':'3',
+      'articles':[
+          {
+          'type':'article',
+          'url': url,
+          'metadata':{}
+        }
+      ]},
+    headers: { 
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': AGOLO_TOKEN
+      }
+  };
 
-	var args = {
-		data: {
-			'coref':'false',
-			'summary_length':'3',
-			'articles':[
-    			{
-					'type':'article',
-					'url': url,
-					'metadata':{}
-				}
-			]},
-		headers: { 
-			'Content-Type': 'application/json',
-			'Ocp-Apim-Subscription-Key': AGOLO_TOKEN
-			}
-	};
+  console.log('Sending Agolo request!', args);
 
-	console.log('Sending Agolo request!', args);
+  lastRequestTimestamp = new Date().getTime();
+  restClient.post(AGOLO_URL, args, function (data, rawResponse) {
+    console.log('Agolo response: ', data);
 
-	lastRequestTimestamp = new Date().getTime();
-	restClient.post(AGOLO_URL, args, function (data, rawResponse) {
-		console.log('Agolo response: ', data);
+    clearInterval(typingInterval);
 
-		clearInterval(typingInterval);
+    if (data && data.summary) {
+      for (var summIdx = 0; summIdx < data.summary.length; summIdx++) {
+        if (data.summary[summIdx].sentences) {
+          var sentences = data.summary[summIdx].sentences;
 
-		if (data && data.summary) {
-			for (var summIdx = 0; summIdx < data.summary.length; summIdx++) {
-				if (data.summary[summIdx].sentences) {
-					var sentences = data.summary[summIdx].sentences;
+          // Quote each line
+          for (var i = 0; i < sentences.length; i++) {
+            sentences[i] = '>' + sentences[i];
+          }
 
-					// Quote each line
-					for (var i = 0; i < sentences.length; i++) {
-						sentences[i] = '>' + sentences[i];
-					}
+          var result = "Here's Agolo's summary of <" + url + '|' + data.title + '>\n';
 
-					result = result + sentences.join('\n-\n');
+          result = result + sentences.join('\n-\n');
 
-					callback(result);
-				}
-			}
-		}
-	});
+          callback(result);
+        }
+      }
+    }
+  });
 }
 
 slackClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
-	bot = rtmStartData.self.id;
+  bot = rtmStartData.self.id;
 });
 
 slackClient.on('open', function() {
-    console.log('Connected');
+  console.log('Connected');
 });
 
 // Make the decision whether to summarize based on a number of factors
 var shouldSummarize = function(message, candidate) {
-	// Ignore bot's own messages
-	if (!message.user || message.user == bot) {
-		return false;
-	}
+  // Ignore bot's own messages
+  if (!message.user || message.user == bot) {
+    return false;
+  }
 
-	// Possibly just another bot talking to us?
-	if (message.is_ephemeral) {
-		return false;
-	}
+  // Possibly just another bot talking to us?
+  if (message.is_ephemeral) {
+    return false;
+  }
 
-	// Is this a real URL?
-	if (!validUrl.isWebUri(candidate)) {
-		return false;
-	}
+  // Is this a real URL?
+  if (!validUrl.isWebUri(candidate)) {
+    return false;
+  }
 
-	// Check our blacklist
-	var url = parseDomain(candidate);
-	if(BLACKLISTED_SITES[url.subdomain + '.' + url.domain + '.' + url.tld]
-		|| BLACKLISTED_SITES[url.subdomain + '.' + url.domain]
-		|| BLACKLISTED_SITES[url.domain + '.' + url.tld]
-		|| BLACKLISTED_SITES[url.domain]) {
-		console.log('Blacklisted site: ', url);
-		return false;
-	}
+  // Check our blacklist
+  var url = parseDomain(candidate);
+  if(BLACKLISTED_SITES[url.subdomain + '.' + url.domain + '.' + url.tld]
+    || BLACKLISTED_SITES[url.subdomain + '.' + url.domain]
+    || BLACKLISTED_SITES[url.domain + '.' + url.tld]
+    || BLACKLISTED_SITES[url.domain]) {
+    console.log('Blacklisted site: ', url);
+    return false;
+  }
 
-	// We're summarizing too often
-	if (new Date().getTime() - lastRequestTimestamp < MAX_REQUEST_RATE_MS) {
-		console.log('We are making too many API requests.');
-		return false;
-	}
+  // We're summarizing too often
+  if (new Date().getTime() - lastRequestTimestamp < MAX_REQUEST_RATE_MS) {
+    console.log('We are making too many API requests.');
+    return false;
+  }
 
-	return true;
+  return true;
 }
 
 slackClient.on('message', function(message) {
-	var text = message.text;
-    var channel = message.channel;
-    var attachments = message.attachments;
+  var text = message.text;
+  var channel = message.channel;
+  var attachments = message.attachments;
 
-    if (text) {
-    	var urlRegex = /<([^\s]+)>/;
+  if (text) {
+    var urlRegex = /<([^\s]+)>/;
 
-    	var matches = text.match(urlRegex);
-    	if (matches) {
-    		// Start at index 1 because 0 has the entire match, not just the group
-    		for (var i = 0; i < matches.length; i++) {
-    			var candidate = matches[i];
-    			if (shouldSummarize(message, candidate)) {
-    				// Show typing indicator as we summarize
-    				var sendTypingMessage = function() {
-    					slackClient._send({
-    						id: 1,
-  							type: 'typing',
-  							channel: channel
-						});
-    				}
-    				var TYPING_MESSAGE_SECS = 3;
-    				var typingInterval = setInterval(function() { sendTypingMessage() }, TYPING_MESSAGE_SECS * 1000);
-    				
+    var matches = text.match(urlRegex);
+    if (matches) {
+      // Start at index 1 because 0 has the entire match, not just the group
+      for (var i = 0; i < matches.length; i++) {
+        var candidate = matches[i];
+        if (shouldSummarize(message, candidate)) {
+          // Show typing indicator as we summarize
+          var sendTypingMessage = function() {
+            slackClient._send({
+              id: 1,
+              type: 'typing',
+              channel: channel
+            });
+          }
+          var TYPING_MESSAGE_SECS = 3;
+          var typingInterval = setInterval(function() { sendTypingMessage() }, TYPING_MESSAGE_SECS * 1000);
+          
 
-    				summarize(candidate, typingInterval, function(result) {
-    					slackClient.sendMessage(result, channel);
-    				});
-    			}
-    		}
-    	}
-
-    	var botMentionRegex = /<@([^\s]+)>/;
-    	
-    	matches = text.match(botMentionRegex);
-    	if (matches && matches[1] === bot) {
-    		slackClient.sendMessage(':blush:', channel);
-    	}
+          summarize(candidate, typingInterval, function(result) {
+            slackClient.sendMessage(result, channel);
+          });
+        }
+      }
     }
+
+    var botMentionRegex = /<@([^\s]+)>/;
+    
+    matches = text.match(botMentionRegex);
+    if (matches && matches[1] === bot) {
+      slackClient.sendMessage(':blush:', channel);
+    }
+  }
 });
 
 slackClient.start();
 
 
 if (HEROKU) {
-	// To prevent Heroku from crashing us. https://github.com/slackhq/node-slack-client/issues/39
-	http = require('http');
-	handle = function(req, res) {return res.end('hit'); };
+  // To prevent Heroku from crashing us. https://github.com/slackhq/node-slack-client/issues/39
+  http = require('http');
+  handle = function(req, res) {return res.end('hit'); };
 
-	server = http.createServer(handle);
+  server = http.createServer(handle);
 
-	server.listen(process.env.PORT || 5000);
+  server.listen(process.env.PORT || 5000);
 
-	if (process.env.HEROKU_APP_URL) {
-		var URL = process.env.HEROKU_APP_URL;
+  if (process.env.HEROKU_APP_URL) {
+    var URL = process.env.HEROKU_APP_URL;
 
-		if (URL.indexOf('http') != 0) {
-			URL = 'http://' + URL;
-		}
+    if (URL.indexOf('http') != 0) {
+      URL = 'http://' + URL;
+    }
 
-		console.log('Heroku app URL: ' + URL);
+    console.log('Heroku app URL: ' + URL);
 
-		var heartbeat = function() {
-			restClient.get(URL, function(){
-				console.log('heartbeat!');
-			});
-		};
+    var heartbeat = function() {
+      restClient.get(URL, function(){
+        console.log('heartbeat!');
+      });
+    };
 
-		heartbeat();
+    heartbeat();
 
-		var HEARTBEAT_INTERVAL_MINS = 5;
-		setInterval(heartbeat, HEARTBEAT_INTERVAL_MINS * 60 * 1000);
-	}
+    var HEARTBEAT_INTERVAL_MINS = 5;
+    setInterval(heartbeat, HEARTBEAT_INTERVAL_MINS * 60 * 1000);
+  }
 }

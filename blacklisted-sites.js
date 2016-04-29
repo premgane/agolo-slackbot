@@ -1,12 +1,12 @@
 // Add your blacklisted sites to this array. Subdomain and TLD are optional and flexible.
 var BLACKLIST = [
-	'agolo.com',
-	'youtube',
-	'twitter.com',
-	'mail.google',
-	'imgur.com',
-	'bit.ly',
-	'tinyurl'
+  'agolo.com',
+  'youtube',
+  'twitter.com',
+  'mail.google',
+  'imgur.com',
+  'bit.ly',
+  'tinyurl'
 ];
 
 
@@ -16,10 +16,8 @@ var empty = {};
 
 // Adapted from: https://egghead.io/lessons/javascript-introducing-reduce-reducing-an-array-into-an-object
 var reducer = function(aggregate, element) {
-	if (!aggregate[element]) {
-		aggregate[element] = 1;
-	}
-	return aggregate;
+  aggregate[element] = 1;
+  return aggregate;
 }
 
 module.exports = BLACKLIST.reduce(reducer, empty);
