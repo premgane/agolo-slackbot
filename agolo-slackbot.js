@@ -8,6 +8,9 @@ var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 var BLACKLISTED_SITES = require('./blacklisted-sites.js');
 
+// Number of bullet points in a summary
+var SUMMARY_LENGTH = 3;
+
 // The minimum amount of time to wait between Agolo API requests
 // Ensures we don't spam the channel with summaries. Or DoS attack the Agolo API.
 var MAX_REQUEST_RATE_MS = 5000;
@@ -23,8 +26,6 @@ if (process.env.SLACK_TOKEN && process.env.AGOLO_TOKEN) {
   AGOLO_URL = process.env.AGOLO_URL;
 
   HEROKU = true;
-  
-  console.log('Slack token: ' + SLACK_TOKEN);
 } else {
   // For local
   var SlackSecret = require('./secrets.js');
@@ -35,7 +36,7 @@ if (process.env.SLACK_TOKEN && process.env.AGOLO_TOKEN) {
   AGOLO_TOKEN = SlackSecret.agoloToken();
 }
 
-var LOG_LEVEL = 'debug';
+var LOG_LEVEL = 'warn';
 
 var slackClient = new RtmClient(SLACK_TOKEN, {logLevel: LOG_LEVEL});
 var restClient = new RestClient();
@@ -48,49 +49,67 @@ var lastRequestTimestamp = 0;
 **/
 
 // Summarize a given URL and call the given callback with the result
-var summarize = function(url, typingInterval, callback) {
+var summarize = function(urls, typingInterval, callback) {
+  var articles = [];
+  for (var i = 0; i < urls.length; i++) {
+    articles.push({
+      'type':'article',
+       'url': urls[i],
+          'metadata':{}
+    });
+  }
+
   var args = {
     data: {
-      'coref':'false',
-      'summary_length':'3',
-      'articles':[
-          {
-          'type':'article',
-          'url': url,
-          'metadata':{}
-        }
-      ]},
+      'summary_length': SUMMARY_LENGTH,
+      'articles': articles
+    },
     headers: { 
       'Content-Type': 'application/json',
       'Ocp-Apim-Subscription-Key': AGOLO_TOKEN
       }
   };
 
-  console.log('Sending Agolo request!', args);
+  console.log('Sending Agolo request!', JSON.stringify(args));
 
   lastRequestTimestamp = new Date().getTime();
   restClient.post(AGOLO_URL, args, function (data, rawResponse) {
-    console.log('Agolo response: ', data);
+    console.log('Agolo response: ', JSON.stringify(data));
 
     clearInterval(typingInterval);
 
     if (data && data.summary) {
+      // Summary title
+      var title = '\n\u201c_*' + data.title + '*_\u201d\n';
+
+      var result = '';
+
       for (var summIdx = 0; summIdx < data.summary.length; summIdx++) {
-        if (data.summary[summIdx].sentences) {
-          var sentences = data.summary[summIdx].sentences;
+        var summ = data.summary[summIdx];
+        if (summ.sentences) {
+          var sentences = summ.sentences;
 
           // Quote each line
           for (var i = 0; i < sentences.length; i++) {
             sentences[i] = '>' + sentences[i];
           }
 
-          var result = "Here's Agolo's summary of \u201c_" + data.title + '_\u201d\n';
+          // If the result already has the summary of a previous URL, append a separator
+          if (result) {
+            result += '-\n';
+          }
 
-          result = result + sentences.join('\n-\n');
+          // Append this doc's summary sentences, with separators
+          result += sentences.join('\n-\n') + '\n';
 
-          callback(result);
+          // If multi-doc summary, show source
+          if (data.summary.length > 1) {
+            result += '(' + summ.metadata.url + ')\n';
+          }
         }
       }
+
+      callback(title + result);
     }
   });
 };
@@ -98,17 +117,20 @@ var summarize = function(url, typingInterval, callback) {
 // Make the decision whether to summarize based on a number of factors
 var shouldSummarize = function(message, candidate) {
   // Ignore bot's own messages
-  if (!message.user || message.user == BOT) {
+  if (!message || !message.user || message.user == BOT) {
+    console.log('Maybe a message from ourselves? Or from Slackbot?');
     return false;
   }
 
   // Possibly just another bot talking to us?
   if (message.is_ephemeral) {
+    console.log(candidate + ' is from an epehmeral message.');
     return false;
   }
 
   // Is this a real URL?
   if (!validUrl.isWebUri(candidate)) {
+    console.log(candidate + ' is not a valid URL.');
     return false;
   }
 
@@ -131,6 +153,17 @@ var shouldSummarize = function(message, candidate) {
   return true;
 };
 
+// Regex helper adapted from: http://stackoverflow.com/a/14210948
+var getMatches = function(string, regex, index) {
+  index || (index = 1); // default to the first capturing group
+  var matches = [];
+  var match;
+  while (match = regex.exec(string)) {
+    matches.push(match[index]);
+  }
+  return matches;
+};
+
 // This bot's user ID
 var BOT;
 
@@ -138,11 +171,11 @@ var BOT;
 var BOT_MENTION_REGEX;
 
 var RESPONSES = [
-	':blush:',
-	':grin:',
-	':innocent:',
-	':relaxed:',
-	':hugging_face:'
+  ':blush:',
+  ':grin:',
+  ':innocent:',
+  ':relaxed:',
+  ':hugging_face:'
 ];
 
 // If we've been mentioned, respond
@@ -164,7 +197,7 @@ var respondToMentions = function(text, slackClient, channel) {
 
 slackClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
   BOT = rtmStartData.self.id;
-  BOT_MENTION_REGEX = new RegExp('<@' + BOT + '>');
+  BOT_MENTION_REGEX = new RegExp('<@' + BOT + '>', 'g');
 });
 
 slackClient.on('open', function() {
@@ -176,37 +209,47 @@ slackClient.on('message', function(message) {
   var channel = message.channel;
   var attachments = message.attachments;
 
-  if (text) {
-    var urlRegex = /<([^\s]+)>/;
+  // Show typing indicator as we summarize
+  var sendTypingMessage = function() {
+    slackClient._send({
+      id: 1,
+      type: 'typing',
+      channel: channel
+    });
+  };
 
-    var matches = text.match(urlRegex);
+  if (text) {
+    var urlRegex = /<([^#@][^\s>]+)>/g;
+
+    var matches = getMatches(text, urlRegex, 1);
     if (matches) {
+      var urlsToSummarize = [];
+
       // Start at index 1 because 0 has the entire match, not just the group
       for (var i = 0; i < matches.length; i++) {
         var candidate = matches[i];
+        console.log('Candidate to summarize: ' + candidate);
         if (shouldSummarize(message, candidate)) {
-          // Show typing indicator as we summarize
-          var sendTypingMessage = function() {
-            slackClient._send({
-              id: 1,
-              type: 'typing',
-              channel: channel
-            });
-          }
+          urlsToSummarize.push(candidate);
+          console.log('We should summarize: ' + candidate);
+        } else {
+          console.log('Will not summarize: ' + candidate);
+        }
+      }
 
-          // Send out a "Typing..." message once in a while as we wait for the summary
-          var TYPING_MESSAGE_SECS = 3;
-          var typingInterval = setInterval(function() { sendTypingMessage(); }, TYPING_MESSAGE_SECS * 1000);
+      if (urlsToSummarize.length) {
+        // Send out a "Typing..." message once in a while as we wait for the summary
+        var TYPING_MESSAGE_SECS = 3;
+        sendTypingMessage();
+        var typingInterval = setInterval(function() { sendTypingMessage(); }, TYPING_MESSAGE_SECS * 1000);
 
           // Kill the "Typing..." indicator after this many seconds
-          var MAX_TYPING_INDICATOR_SECS = 30;
-          setTimeout(function() { clearInterval(typingInterval); }, MAX_TYPING_INDICATOR_SECS * 1000)
-          
+        var MAX_TYPING_INDICATOR_SECS = 30;
+        setTimeout(function() { clearInterval(typingInterval); }, MAX_TYPING_INDICATOR_SECS * 1000);
 
-          summarize(candidate, typingInterval, function(result) {
-            slackClient.sendMessage(result, channel);
-          });
-        }
+        summarize(urlsToSummarize, typingInterval, function(result) {
+          slackClient.sendMessage(result, channel);
+        });
       }
     }
 
