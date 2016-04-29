@@ -78,6 +78,8 @@ Because it's a long-running process (i.e, a Node server), you should run it in [
 
 ## Use the bot
 
-You need to [invite the bot into a Slack channel](https://get.slack.help/hc/en-us/articles/201980108-Inviting-team-members-to-a-channel) for it to start listening to that channel. Then, whenever someone posts a link, the bot will post a summary to the channel.
+You need to [invite the bot into a Slack channel](https://get.slack.help/hc/en-us/articles/201980108-Inviting-team-members-to-a-channel) for it to start listening to that channel.
+
+Then, whenever someone posts a link, the bot will post a summary to the channel. If someone posts multiple links in the same message, those web pages will get [summarized together](https://en.wikipedia.org/wiki/Multi-document_summarization).
 
 Or, you could Direct Message the bot and mention a URL. It will DM you back with the summary.
