@@ -40,11 +40,12 @@ var LOG_LEVEL = 'debug';
 var slackClient = new RtmClient(SLACK_TOKEN, {logLevel: LOG_LEVEL});
 var restClient = new RestClient();
 
-// This bot's user ID
-var bot;
-
 // The timestamp, in milliseconds, of when the latest API request was sent
 var lastRequestTimestamp = 0;
+
+/**
+ * Helper functions
+**/
 
 // Summarize a given URL and call the given callback with the result
 var summarize = function(url, typingInterval, callback) {
@@ -92,20 +93,12 @@ var summarize = function(url, typingInterval, callback) {
       }
     }
   });
-}
-
-slackClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
-  bot = rtmStartData.self.id;
-});
-
-slackClient.on('open', function() {
-  console.log('Connected');
-});
+};
 
 // Make the decision whether to summarize based on a number of factors
 var shouldSummarize = function(message, candidate) {
   // Ignore bot's own messages
-  if (!message.user || message.user == bot) {
+  if (!message.user || message.user == BOT) {
     return false;
   }
 
@@ -136,7 +129,47 @@ var shouldSummarize = function(message, candidate) {
   }
 
   return true;
+};
+
+// This bot's user ID
+var BOT;
+
+// Determines if the bot has been mentioned
+var BOT_MENTION_REGEX;
+
+var RESPONSES = [
+	':blush:',
+	':grin:',
+	':innocent:',
+	':relaxed:',
+	':hugging_face:'
+];
+
+// If we've been mentioned, respond
+var respondToMentions = function(text, slackClient, channel) {
+    
+    var matches = text.match(BOT_MENTION_REGEX);
+    if (matches) {
+      // Randomly pick a response
+      var response = RESPONSES[Math.floor(Math.random() * (RESPONSES.length))];
+      slackClient.sendMessage(response, channel);
+    }
 }
+
+
+
+/** 
+ * Slack Client event handlers 
+ **/
+
+slackClient.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
+  BOT = rtmStartData.self.id;
+  BOT_MENTION_REGEX = new RegExp('<@' + BOT + '>');
+});
+
+slackClient.on('open', function() {
+  console.log('Connected');
+});
 
 slackClient.on('message', function(message) {
   var text = message.text;
@@ -160,8 +193,14 @@ slackClient.on('message', function(message) {
               channel: channel
             });
           }
+
+          // Send out a "Typing..." message once in a while as we wait for the summary
           var TYPING_MESSAGE_SECS = 3;
-          var typingInterval = setInterval(function() { sendTypingMessage() }, TYPING_MESSAGE_SECS * 1000);
+          var typingInterval = setInterval(function() { sendTypingMessage(); }, TYPING_MESSAGE_SECS * 1000);
+
+          // Kill the "Typing..." indicator after this many seconds
+          var MAX_TYPING_INDICATOR_SECS = 30;
+          setTimeout(function() { clearInterval(typingInterval); }, MAX_TYPING_INDICATOR_SECS * 1000)
           
 
           summarize(candidate, typingInterval, function(result) {
@@ -171,17 +210,13 @@ slackClient.on('message', function(message) {
       }
     }
 
-    var botMentionRegex = /<@([^\s]+)>/;
-    
-    matches = text.match(botMentionRegex);
-    if (matches && matches[1] === bot) {
-      slackClient.sendMessage(':blush:', channel);
-    }
+    // Check if someone has mentioned us and respond
+    respondToMentions(text, slackClient, channel);
   }
 });
 
+// Finally, start listening to Slack
 slackClient.start();
-
 
 // Heroku requires us to run a webserver and periodically ping it
 if (HEROKU) {
