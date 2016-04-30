@@ -175,7 +175,14 @@ var getMatches = function(string, regex, index) {
 // Deal with Unicode weirdness
 // Taken from http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html
 var forceUnicodeEncoding = function(string) {
-  return decodeURIComponent(escape(string));
+  var result = string;
+
+  try {
+    result = decodeURIComponent(escape(string));
+  } catch (e) {
+    console.log('Encoding hack choked on: ' + string, e);
+  }
+  return result;
 }
 
 // This bot's user ID
