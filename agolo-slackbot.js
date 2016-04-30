@@ -108,7 +108,7 @@ var summarize = function(urls, typingInterval, callback) {
           result += sentences.join('\n-\n') + '\n';
 
           // If multi-doc summary, show source
-          if (data.summary.length > 1) {
+          if (urls.length > 1) {
             result += '(' + summ.metadata.url + ')\n';
           }
         }
