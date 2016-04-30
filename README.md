@@ -33,7 +33,7 @@ Here's an overview of the steps to get this bot up and running:
 
 1. Get Slack bot integration credentials.
 1. Get [Agolo](http://agolo.com) developer credentials.
-1. `git clone` this repository.
+1. [Download this repository as zip.](https://github.com/premgane/agolo-slackbot/archive/master.zip) Then, unzip.
 1. Enter the credentials into the bot's configuration.
 1. Deploy & run the bot.
 
@@ -45,7 +45,7 @@ Here's an overview of the steps to get this bot up and running:
 
 ## Configure the bot
 
-On the machine you want to use as your server, [run `git clone`](https://help.github.com/articles/cloning-a-repository/) to get this repository.
+On the machine you want to use as your server, [download this repo and unzip it.](https://github.com/premgane/agolo-slackbot/archive/master.zip)
 
 Manually create a file called `secrets.js` in the repo's directory.
 
