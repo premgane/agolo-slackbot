@@ -1,6 +1,7 @@
 // Add your blacklisted sites to this array. Subdomain and TLD are optional and flexible.
 // Should probably be kept in sync with https://github.com/premgane/agolo-twitterbot/blob/master/server.py
 var BLACKLIST = [
+  'github',
   'agolo.com',
   'youtube',
   'twitter.com',
