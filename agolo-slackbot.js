@@ -61,7 +61,6 @@ var summarize = function(urls, typingInterval, callback) {
 
   var args = {
     data: {
-      'coref': true,
       'summary_length': SUMMARY_LENGTH,
       'articles': articles
     },
