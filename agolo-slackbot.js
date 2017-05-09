@@ -143,11 +143,11 @@ var shouldSummarize = function(message, candidate) {
 
   // Check our blacklist
   var url = parseDomain(candidate);
-  if(BLACKLISTED_SITES[candidate]
+  if(url === null || (BLACKLISTED_SITES[candidate]
     || BLACKLISTED_SITES[url.subdomain + '.' + url.domain + '.' + url.tld]
     || BLACKLISTED_SITES[url.subdomain + '.' + url.domain]
     || BLACKLISTED_SITES[url.domain + '.' + url.tld]
-    || BLACKLISTED_SITES[url.domain]) {
+    || BLACKLISTED_SITES[url.domain])) {
     console.log('Blacklisted site: ', url);
     return false;
   }
