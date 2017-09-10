@@ -82,7 +82,8 @@ var summarize = function(urls, typingInterval, callback) {
       // Summary title
       var title;
       if (data.title) {
-        title = '\n*' + forceUnicodeEncoding(data.title) + '*\n';
+        title = data.title.replace(/\s+/g, ' ');
+        title = '\n*' + forceUnicodeEncoding(title) + '*\n';
       } else {
         title = "Here's Agolo's summary of " + urls.join(', ') + '\n';
       }
