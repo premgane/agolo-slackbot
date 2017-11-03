@@ -12,7 +12,8 @@ var BLACKLIST = [
   'imgur.com',
   'bit.ly',
   'tinyurl',
-  'vine'
+  'vine',
+  'dropbox'
 ];
 
 
