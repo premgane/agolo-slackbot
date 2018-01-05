@@ -15,7 +15,9 @@ var BLACKLIST = [
   'vine',
   'dropbox',
   'slack',
-  'notion.so'
+  'notion.so',
+  'zoom.us',
+  'appear.in'
 ];
 
 
