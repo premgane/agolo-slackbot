@@ -9,6 +9,7 @@ var BLACKLIST = [
   'spotify.com',
   'twitter.com',
   'mail.google',
+  'google.com'
   'imgur.com',
   'bit.ly',
   'tinyurl',
